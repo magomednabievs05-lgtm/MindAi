@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090910">
+<title>MindAI — твой ИИ-помощник</title>
+<style>
+:root{color-scheme:dark;--bg:#090910;--panel:#12121d;--line:#29283c;--text:#f5f4ff;--muted:#a6a3bd;--a:#8b5cf6;--b:#438cff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -15%,#29204b 0,transparent 45%),var(--bg);color:var(--text);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+.app{max-width:780px;margin:auto;min-height:100vh;display:flex;flex-direction:column;padding:18px}
+header{display:flex;align-items:center;gap:12px;padding:10px 2px 18px;border-bottom:1px solid var(--line)}
+.logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--a),var(--b));display:grid;place-items:center;font-weight:900;font-size:21px;box-shadow:0 8px 30px #6945d455}
+.brand{font-size:20px;font-weight:800;letter-spacing:.2px}.sub{font-size:12px;color:var(--muted)}
+.status{margin-left:auto;border:1px solid var(--line);border-radius:99px;padding:6px 10px;color:#c9c4df;font-size:12px}
+main{flex:1;display:flex;flex-direction:column;padding:26px 0 16px}
+.hero{text-align:center;margin:auto auto 24px;max-width:560px}.orb{width:72px;height:72px;margin:0 auto 18px;border-radius:24px;background:linear-gradient(135deg,#8b5cf6,#398cff);display:grid;place-items:center;font-size:34px;box-shadow:0 12px 45px #6945d455}
+h1{font-size:clamp(28px,7vw,42px);line-height:1.12;margin:0 0 10px;letter-spacing:-1px}.hero p{color:var(--muted);margin:0}
+.suggestions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:20px 0 24px}
+.suggestion{background:#12121d;border:1px solid var(--line);color:#e8e5f7;border-radius:14px;padding:13px;text-align:left;font:inherit;font-size:14px;cursor:pointer}
+.suggestion:active,.send:active{transform:scale(.98)}
+.chat{display:flex;flex-direction:column;gap:13px;padding-bottom:16px}
+.msg{max-width:88%;padding:12px 15px;border-radius:17px;white-space:pre-wrap;overflow-wrap:anywhere}
+.bot{background:var(--panel);border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:5px}
+.user{background:linear-gradient(135deg,#6542c8,#356dc8);align-self:flex-end;border-bottom-right-radius:5px}
+.composer{position:sticky;bottom:0;background:#0e0e17;border:1px solid #34324a;border-radius:18px;padding:8px;display:flex;gap:8px;box-shadow:0 12px 35px #0008}
+textarea{resize:none;flex:1;min-height:44px;max-height:130px;background:transparent;border:0;outline:0;color:var(--text);font:inherit;padding:10px}
+.send{width:46px;height:46px;border:0;border-radius:14px;background:linear-gradient(135deg,var(--a),var(--b));color:white;font-size:21px;cursor:pointer}
+.note{text-align:center;color:#8e8ba4;font-size:11px;margin:10px 0 4px}
+.hidden{display:none!important}
+@media(max-width:430px){.app{padding:13px}.suggestions{grid-template-columns:1fr}.msg{max-width:94%}.status{font-size:11px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="logo">M</div><div><div class="brand">MindAI</div><div class="sub">Твой помощник для идей и учёбы</div></div><div class="status">● Демо-режим</div></header>
+<main>
+<section class="hero" id="hero"><div class="orb">✦</div><h1>Привет! Я MindAI.</h1><p>Чем могу помочь тебе сегодня?</p>
+<div class="suggestions">
+<button class="suggestion" data-prompt="Придумай 3 идеи для короткого видео">🎬 Идеи для видео</button>
+<button class="suggestion" data-prompt="Объясни простыми словами сложную тему">📚 Помощь с учёбой</button>
+<button class="suggestion" data-prompt="Помоги придумать название для проекта">💡 Новая идея</button>
+<button class="suggestion" data-prompt="Составь план на сегодня">🗓️ План на день</button>
+</div></section>
+<section class="chat" id="chat" aria-live="polite"></section>
+</main>
+<div class="composer"><textarea id="input" rows="1" placeholder="Напиши сообщение MindAI..." aria-label="Сообщение"></textarea><button class="send" id="send" aria-label="Отправить">➤</button></div>
+<div class="note">Это первая демо-версия. Ответы пока шаблонные — настоящий ИИ ещё не подключён.</div>
+</div>
+<script>
+const chat=document.getElementById('chat'),input=document.getElementById('input'),hero=document.getElementById('hero');
+function reply(text){
+ const t=text.toLowerCase();
+ if(/видео|рилс|shorts|ролик/.test(t)) return 'Вот идея для MindCode:\\n1. Начни с сильного вопроса.\\n2. Дай 3 коротких полезных совета.\\n3. Закончи неожиданным выводом.\\n\\nЭто демо-ответ. Когда подключим модель, MindAI сможет генерировать ответы на самые разные вопросы.';
+ if(/уч[её]б|тема|объясни|задач/.test(t)) return 'Конечно! Напиши тему или пришли условие задания. Я помогу разобрать материал простыми словами.\\n\\nПока это демонстрационный режим, а не подключённая ИИ-модель.';
+ if(/план|сегодня/.test(t)) return 'Пример плана:\\n• Выбери одну главную задачу.\\n• Раздели её на 3 маленьких шага.\\n• Сделай перерыв и проверь результат.\\n\\nЭто пока примерный демо-ответ.';
+ return 'Сообщение получено! ✨\\n\\nMindAI пока работает в демо-режиме и использует несколько заранее подготовленных ответов. Следующий этап — безопасно подключить настоящую ИИ-модель через сервер, не раскрывая секретные ключи.';
+}
+function add(text,cls){const el=document.createElement('div');el.className='msg '+cls;el.textContent=text;chat.appendChild(el);el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function send(text){text=(text||input.value).trim();if(!text)return;hero.classList.add('hidden');add(text,'user');input.value='';setTimeout(()=>add(reply(text),'bot'),350);}
+document.getElementById('send').addEventListener('click',()=>send());
+input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}});
+document.querySelectorAll('[data-prompt]').forEach(b=>b.addEventListener('click',()=>send(b.dataset.prompt)));
+</script>
+</body>
+</html>
